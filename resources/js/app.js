@@ -7,14 +7,30 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+import { Form, HasError, AlertError } from 'vform'
 import VueRouter from 'vue-router'
+import moment from 'moment'
+
 Vue.use(VueRouter)
+
+window.Form = Form;
+Vue.component(HasError.name, HasError)
+Vue.component(AlertError.name, AlertError)
 
 let routes = [
   { path: '/dashboard', component: require('./components/DashboardComponent.vue').default},
+  { path: '/users', component: require('./components/UsersComponent.vue').default},
   { path: '/profile', component: require('./components/ProfileComponent.vue').default}
 ]
- 
+
+Vue.filter('upText', function (text) {
+	return text.charAt(0).toUpperCase() + text.slice(1);
+});
+
+Vue.filter('myDate', function (created) {
+	return moment(created).format('MMMM Do YYYY');
+});
+
 
 const router = new VueRouter({
   routes
