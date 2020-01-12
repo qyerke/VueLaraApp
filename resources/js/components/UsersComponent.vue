@@ -33,7 +33,7 @@
                           <i class="fa fa-edit"></i>
                       </a>
                         /
-                      <a href="">
+                      <a @click="deleteUser(user.id)">
                           <i class="fa fa-trash" style="color:red"></i>
                       </a>
                   </td>
@@ -124,22 +124,49 @@
         },
         methods: {
         loadUsers() {
-          axios.get('api/user').then(({data}) => (this.users = data.data)); 
+          axios
+          .get('api/user')
+          .then(({data}) => (this.users = data.data)); 
         },
-          createUser(){
+        createUser(){
             this.$Progress.start();
-            this.form.post('api/user');
-            $('#addNew').modal('hide')
-            toast.fire({
+            this.form.post('api/user')
+            .then(()=>{
+              $('#addNew').modal('hide')
+              toast.fire({
               icon: 'success',
               title: 'User created successfully'
-            });
-            this.$Progress.finish();
-
-          }
+              });
+              Fire.$emit('AfterCreate');
+              this.$Progress.finish();
+              })
+              .catch(()=>{}) 
         },
+        deleteUser(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                this.form.delete('api/user/'+id)
+                  if (result.value) {
+                  Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                  )
+                }            
+            })
+        }
+      },
         created() {
             this.loadUsers();
+            //Fire.$on('AfterCreate',() => {this.loadUsers()});
+            // setInterval(() => this.loadUsers(), 3000);
             console.log('Component mounted.')
         }
     }

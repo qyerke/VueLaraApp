@@ -10,10 +10,10 @@ window.Vue = require('vue');
 import { Form, HasError, AlertError } from 'vform'
 import VueRouter from 'vue-router'
 import moment from 'moment'
-import swal from 'sweetalert2'
-window.swal = swal
+import Swal from 'sweetalert2'
+window.Swal = Swal
 
-const toast = swal.mixin({
+const toast = Swal.mixin({
   toast: true,
   position: 'top-end',
   showConfirmButton: false,
@@ -65,7 +65,10 @@ Vue.filter('myDate', function (created) {
 });
 
 
+window.Fire = new Vue();
+
 const router = new VueRouter({
+	mode: 'history',
   routes
 })
 
