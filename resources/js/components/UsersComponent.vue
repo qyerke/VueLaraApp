@@ -7,7 +7,7 @@
               <h3 class="card-title">Responsive Hover Table</h3>
 
               <div class="card-tools">
-                <button type="" class="btn btn-success" data-toggle="modal" data-target="#addNew">Add New <i class="fas fa-user-plus"></i></button>
+                <button type="" class="btn btn-success" @click="openModal">Add New <i class="fas fa-user-plus"></i></button>
               </div>
             </div>
             <!-- /.box-header -->
@@ -29,7 +29,7 @@
                   <td>{{user.type | upText}}</td>
                   <td>{{user.created_at | myDate }}</td>
                   <td>
-                      <a href="">
+                      <a @click="editUser(user)">
                           <i class="fa fa-edit"></i>
                       </a>
                         /
@@ -49,9 +49,10 @@
         <div class="modal fade" id="addNew" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="addNew" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-            <form @submit.prevent="createUser()">
-              <div class="modal-header">
-                <h5 class="modal-title" id="addNew">Add New</h5>
+            <form @submit.prevent=" editMode ? updateUser() : createUser()">
+              <div class="modal-header"> 
+                <h5 v-show="!editMode" lass="modal-title" id="addNew">Add New</h5>
+                <h5 v-show="editMode" class="modal-title" id="addNew">Update User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -96,7 +97,8 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit"  v-show="editMode" class="btn btn-success">Update</button>
+                <button type="submit" v-show="!editMode" lass="btn btn-primary">Create</button>
               </div>
               </form>
             </div>
@@ -111,8 +113,10 @@
     export default {
         data() {
             return {
+            editMode: false,
             users: {},
             form: new Form({
+               id: '',
                name: '', 
                email: '', 
                password: '', 
@@ -128,6 +132,37 @@
           .get('api/user')
           .then(({data}) => (this.users = data.data)); 
         },
+        openModal() {
+            this.editMode = false
+            this.form.reset()
+            $('#addNew').modal('show')
+        },
+        editUser(user) {
+            this.editMode = true
+            this.form.reset()
+            $('#addNew').modal('show')
+            this.form.fill(user)
+        },
+
+        updateUser(id){
+          this.$Progress.start();
+          this.form.put('api/user/'+this.form.id)
+          .then(() => {
+            //success
+            $('#addNew').modal('hide')
+            Swal.fire(
+                  'Updated!',
+                  'User has been Updated.',
+                  'success'
+                )
+              this.$Progress.finish();
+          })
+          .catch(()=> {
+          this.$Progress.fail();
+
+          });
+        },
+        
         createUser(){
             this.$Progress.start();
             this.form.post('api/user')
@@ -142,7 +177,7 @@
               })
               .catch(()=>{}) 
         },
-        deleteUser(id) {
+        deleteUser(id) { 
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -152,15 +187,19 @@
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
               }).then((result) => {
+                this.$Progress.start();
                 this.form.delete('api/user/'+id)
                   if (result.value) {
                   Swal.fire(
                     'Deleted!',
-                    'Your file has been deleted.',
+                    'User has been deleted.',
                     'success'
                   )
+                  this.$Progress.finish();
                 }            
             })
+                
+
         }
       },
         created() {

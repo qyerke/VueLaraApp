@@ -24,7 +24,7 @@ const toast = Swal.mixin({
     toast.addEventListener('mouseleave', Swal.resumeTimer)
   }
 });
-				
+        
 window.toast = toast;
 
 import VueProgressBar from 'vue-progressbar'
@@ -57,18 +57,18 @@ let routes = [
 ]
 
 Vue.filter('upText', function (text) {
-	return text.charAt(0).toUpperCase() + text.slice(1);
+  return text.charAt(0).toUpperCase() + text.slice(1);
 });
 
 Vue.filter('myDate', function (created) {
-	return moment(created).format('MMMM Do YYYY');
+  return moment(created).format('MMMM Do YYYY');
 });
 
 
 window.Fire = new Vue();
 
 const router = new VueRouter({
-	mode: 'history',
+  mode: 'history',
   routes
 })
 
