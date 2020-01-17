@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -97,15 +96,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </router-link>
           </li>
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-power-off"></i>
-              <p>
-                Logout  
-              </p>
-            </a>
-          </li>
-
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-cog"></i>
@@ -123,6 +113,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </li>
             </ul>
           </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-power-off"></i>
+              <p>
+                Logout  
+              </p>
+            </a>
+          </li>
+          
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -132,7 +132,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
