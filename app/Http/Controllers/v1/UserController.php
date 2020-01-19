@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Auth;
 
 class UserController extends Controller
 {
@@ -49,6 +50,12 @@ class UserController extends Controller
             'photo' => $request['photo'],
             'password' => Hash::make($request['password'])
         ]);
+    }
+
+    public function profile(){
+       
+        //return Auth::user();
+        return auth()->user();
     }
 
     /**

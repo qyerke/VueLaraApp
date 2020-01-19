@@ -98,42 +98,32 @@
               <!-- /.tab-pane -->
 
               <div class="tab-pane" id="settings">
-                <form class="form-horizontal">
-                  <div class="form-group">
-                    <label for="inputName" class="col-sm-2 control-label">Name</label>
+                <form class="form-horizontal"
+                     <div class="form-group">
+                  <input v-model="form.name" type="text" name="name" placeholder="Name" 
+                    class="form-control">
+                  <has-error :form="form" field="name"></has-error>
+                </div>
 
-                    <div class="col-sm-10">
-                      <input type="email" class="form-control" id="inputName" placeholder="Name">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                <div class="form-group">
+                  <input v-model="form.email" type="email" name="email" placeholder="Email" 
+                    class="form-control">
+                  <has-error :form="form" field="email"></has-error>
+                </div>
 
-                    <div class="col-sm-10">
-                      <input type="email" class="form-control" id="inputEmail" placeholder="Email">
-                    </div>
+                <div class="form-group">
+                  <textarea v-model="form.bio" name="bio" id="bio" placeholder="Short Bio" 
+                    class="form-control"></textarea>
+                  <has-error :form="form" field="bio"></has-error>
+                </div>
+                
+                <div class="form-group">
+                  <label for="photo">Profile Photo</label>
+                  <div class="col-sm-12">
+                    <input type="file" @change="updateProfile" name="photo" class="form-input">
                   </div>
-                  <div class="form-group">
-                    <label for="inputName" class="col-sm-2 control-label">Name</label>
+                </div>
 
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" id="inputName" placeholder="Name">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputExperience" class="col-sm-2 control-label">Experience</label>
-
-                    <div class="col-sm-10">
-                      <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
-
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
-                    </div>
-                  </div>
                   <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                       <div class="checkbox">
@@ -161,9 +151,40 @@
 </template>
 
 <script>
+    import Form from 'vform'
     export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
+      data() {
+        return {
+            form: new Form({
+               id: '',
+               name: '', 
+               email: '', 
+               password: '', 
+               type: '', 
+               bio: '', 
+               photo: '' 
+            }) 
+            }
+      },
+      methods: {
+      updateProfile(e){
+        let file = e.target.files[0];
+        console.log(file.size);
+        let reader = new FileReader();
+
+        reader.onloadend = (file) => {
+          this.form.photo = reader.result
+          console.log(reader.result)
+          }
+          reader.readAsDataURL(file);  
+       }
+      },
+      mounted() {
+            console.log(this.form);
+      },
+      created() {
+        axios.get('api/profile')
+        .then(({data})=>(this.form.fill(data)));
+      }
     }
 </script>
