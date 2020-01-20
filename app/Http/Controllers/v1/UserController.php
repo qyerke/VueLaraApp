@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Auth;
+use Image;
 
 class UserController extends Controller
 {
@@ -53,9 +54,25 @@ class UserController extends Controller
     }
 
     public function profile(){
-       
-        //return Auth::user();
         return auth()->user();
+    }
+
+    public function updateInfo(Request $request){
+        $user = auth()->user();
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:191|email|unique:users,email,'.$user->id,
+        ]);
+
+        $curentPhoto = $user->photo;
+        if($request->photo != $curentPhoto){
+            $name = time(). '.' .explode(';', explode('/', $request->photo)[1])[0];
+            Image::make($request->photo)->save(public_path('img/profile/').$name);
+            //$request->photo = $name;
+            $request->merge(['photo' => $name]);
+        };
+        $user->update($request->all());
+        return ['message' => 'Success'];
     }
 
     /**

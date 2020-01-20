@@ -135,7 +135,7 @@
                   </div>
                   <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                      <button type="submit" class="btn btn-danger">Submit</button>
+                      <button type="submit" class="btn btn-danger" @click.prevent="updateInfo">Update</button>
                     </div>
                   </div>
                 </form>
@@ -167,16 +167,36 @@
             }
       },
       methods: {
+      updateInfo() {
+        this.$Progress.start();
+        this.form.put('api/profile')
+        .then(()=>{
+
+        this.$Progress.finish();
+
+        })
+        .catch(()=>{
+        this.$Progress.fail();
+        });
+      },
       updateProfile(e){
         let file = e.target.files[0];
         console.log(file.size);
         let reader = new FileReader();
-
-        reader.onloadend = (file) => {
+        if (file['size'] < 2111775) {
+          reader.onloadend = (file) => {
           this.form.photo = reader.result
           console.log(reader.result)
           }
           reader.readAsDataURL(file);  
+        }
+        else {
+         Swal.fire({
+            type: 'error',
+            title: 'Oops...',
+            text: 'You are uploading a large file',
+          })
+        }
        }
       },
       mounted() {
