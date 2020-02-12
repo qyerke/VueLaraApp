@@ -101,14 +101,20 @@
                 <form class="form-horizontal"
                      <div class="form-group">
                   <input v-model="form.name" type="text" name="name" placeholder="Name" 
-                    class="form-control">
+                    class="form-control" :class="{'is-invalid': form.errors.has('name')}">
                   <has-error :form="form" field="name"></has-error>
                 </div>
 
                 <div class="form-group">
                   <input v-model="form.email" type="email" name="email" placeholder="Email" 
-                    class="form-control">
+                    class="form-control" :class="{'is-invalid': form.errors.has('email')}" >
                   <has-error :form="form" field="email"></has-error>
+                </div>
+                
+                <div class="form-group">
+                  <input v-model="form.password" type="password" name="password" placeholder="password" 
+                    class="form-control" :class="{'is-invalid': form.errors.has('password')}" >
+                  <has-error :form="form" field="password"></has-error>
                 </div>
 
                 <div class="form-group">
@@ -171,7 +177,6 @@
         this.$Progress.start();
         this.form.put('api/profile')
         .then(()=>{
-
         this.$Progress.finish();
 
         })
@@ -181,12 +186,11 @@
       },
       updateProfile(e){
         let file = e.target.files[0];
-        console.log(file.size);
         let reader = new FileReader();
         if (file['size'] < 2111775) {
           reader.onloadend = (file) => {
           this.form.photo = reader.result
-          console.log(reader.result)
+
           }
           reader.readAsDataURL(file);  
         }
